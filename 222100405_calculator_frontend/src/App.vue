@@ -19,9 +19,9 @@
         </p>
         <p>
           <Button type="button" id=")" @click="handleButtonClick">)</Button>
-          <Button type="button" id="ln" @click="handleButtonClick">ln</Button>
-          <Button type="button" id="log" @click="handleButtonClick">log</Button>
-          <Button type="button" id="√" @click="handleButtonClick">√</Button>
+          <Button type="button" id="n" @click="handleButtonClick">ln</Button>
+          <Button type="button" id="g" @click="handleButtonClick">log</Button>
+          <Button type="button" id="t" @click="handleButtonClick">√</Button>
           <Button type="button" id="-" @click="handleButtonClick">-</Button>
         </p>
         <p>
