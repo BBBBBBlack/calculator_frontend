@@ -1,55 +1,65 @@
 <template>
-  <div class="total">
-    <div class="center">
-      <Option optionType="利率类型" :options="options1" v-model="rateType" />
-    </div>
-    <br>
-    <div class="container">
-      <div id="selects" class="column left">
-        <div v-if="rateType === 0">
-          <Input label="存款金额：" placeholder="请输入存款金额" v-model="money" type="number" />
-          <Option label="存款时长：" optionType="存款时长" :options="options2" v-model="storeTime" />
-        </div>
-        <div v-if="rateType === 1">
-          <Input label="贷款金额：" placeholder="请输入贷款金额" v-model="money" type="number" />
-          <Option label="贷款时长：" optionType="贷款时长" :options="options3" v-model="storeTime" />
-        </div>
-        <div v-if="rateType != null">
-          <div>
-            <label :for="id" class="inline-label"> 利息：</label>
-            <div id="inter" class="inline-div">{{ interest }}</div>
-          </div>
-          <button id="calRate" @click="getRate">计算</button>
-        </div>
+  <div>
+    <!-- 切换时将setNull置1，隐藏该页面所有元素 -->
+    <router-link id="rlink" to="/app"><button @click="setNull = true">基础计算器</button></router-link>
+    <!-- 新界面在此处加载 -->
+    <router-view></router-view>
+    <div class="total" v-if="!setNull">
+      <div class="center">
+        <Option optionType="利率类型" :options="options1" v-model="rateType" />
       </div>
-      <div class="separator"></div>
-      <div id="update" class="column right">
-        <div>
-          <button @click="getRateTable">利率查询</button>
+      <br>
+      <div class="container">
+        <div id="selects" class="column left">
+          <div v-if="rateType === 0">
+            <label>存款金额：</label>
+            <Input placeholder="请输入存款金额" v-model="money" type="number" />
+            <label>存款时长：</label>
+            <Option optionType="存款时长" :options="options2" v-model="storeTime" />
+          </div>
+          <div v-if="rateType === 1">
+            <label>贷款金额：</label>
+            <Input placeholder="请输入贷款金额" v-model="money" type="number" />
+            <label>贷款时长：</label>
+            <Option optionType="贷款时长" :options="options3" v-model="storeTime" />
+          </div>
+          <div v-if="rateType != null">
+            <div>
+              <label class="inline-label"> 利息：</label>
+              <div id="inter" class="inline-div">{{ interest }}</div>
+            </div>
+            <button id="calRate" @click="getRate">计算</button>
+          </div>
         </div>
-        <div>
-          <table>
-            <thead>
-              <div v-if="rateType === 0 && rateTable != null">
-                <tr>
-                  <th>存款利率表</th>
+        <div class="separator"></div>
+        <div id="update" class="column right">
+          <div>
+            <button @click="getRateTable">利率查询</button>
+          </div>
+          <div>
+            <table>
+              <thead>
+                <div v-if="rateType === 0 && rateTable != null">
+                  <tr>
+                    <th>存款利率表</th>
+                  </tr>
+                </div>
+                <div v-if="rateType === 1 && rateTable != null">
+                  <tr>
+                    <th>贷款利率表</th>
+                  </tr>
+                </div>
+              </thead>
+              <tbody>
+                <tr v-for="(rate, key) in rateTable" :key="key">
+                  <td>{{ rateMap[key] }}</td>
+                  <Input type="number" v-model="rateTable[key]" />
                 </tr>
-              </div>
-              <div v-if="rateType === 1 && rateTable != null">
-                <tr>
-                  <th>贷款利率表</th>
-                </tr>
-              </div>
-            </thead>
-            <tbody>
-              <tr v-for="(rate, key) in rateTable" :key="key">
-                <td>{{ rateMap[key] }}</td>
-                <input type="number" v-model="rateTable[key]">
-              </tr>
-            </tbody>
-          </table>
-          <div v-if="rateTable != null">
-            <button @click="updateRate">修改利率</button>
+              </tbody>
+            </table>
+            <div v-if="rateTable != null">
+              <button @click="updateRate">修改利率</button>
+            </div>
           </div>
         </div>
       </div>
@@ -65,6 +75,7 @@ export default {
   name: 'Rate',
   data: function () {
     return {
+      setNull: false,
       rateType: null,
       storeTime: null,
       money: null,
@@ -78,13 +89,6 @@ export default {
       options1: ['存款', '贷款'],
       options2: ['三个月', '半年', '1年', '2年', '3年', '5年'],
       options3: ['半年', '1年', '2年', '3年', '4年', '5年'],
-      //计算利率
-      //计算表达式
-      expression: '',
-      result: '',
-      res: '',
-      data_stack: [],
-      opa_stack: []
     };
   },
   components: {
@@ -166,7 +170,7 @@ export default {
   border: 2px solid #ccc;
   /* 添加边框 */
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   /* text-align: center; */
@@ -180,13 +184,20 @@ export default {
 }
 
 .left :not(:first-child) {
+  /* margin-right: auto; */
+  /* margin-left: 5px; */
   margin-bottom: 30px;
 }
+
 #calRate {
   position: absolute;
-  bottom: 20px; /* 距离底部 20 像素 */
-  right: 330px; /* 距离右侧 20 像素 */
+  bottom: 20px;
+  /* 距离底部 20 像素 */
+  right: 330px;
+  /* 距离右侧 20 像素*/
+
 }
+
 .right {
   line-height: 1.5;
 }
@@ -225,5 +236,12 @@ export default {
 
 .total button:hover {
   background-color: #207dc4;
+}
+#rlink {
+  position: absolute;
+  top: 300px;
+  right: 300px;
+  width: 100px;
+  height: 30px;
 }
 </style>

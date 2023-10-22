@@ -1,56 +1,58 @@
 <template>
   <div>
-      <div v-if="!isRatePage">
-        <div id="block">
-          <div id="block00"></div>
-          <div id="block01"></div>
-          <div id="block1">{{ expression }}</div>
-          <div id="block2">{{ result }}</div>
-        </div>
-        <div class="bangbang">
-          <p>
-            <Button id="(" @click="handleButtonClick">(</Button>
-            <Button id="C" @click="handleButtonClick">C</Button>
-            <Button id="/" @click="handleButtonClick">/</Button>
-            <Button id="*" @click="handleButtonClick">*</Button>
-            <Button id="d" @click="handleButtonClick">del</Button>
-          </p>
-          <p>
-            <Button type="button" id=")" @click="handleButtonClick">)</Button>
-            <Button type="button" id="ln" @click="handleButtonClick">ln</Button>
-            <Button type="button" id="log" @click="handleButtonClick">log</Button>
-            <Button type="button" id="√" @click="handleButtonClick">√</Button>
-            <Button type="button" id="-" @click="handleButtonClick">-</Button>
-          </p>
-          <p>
-            <Button type="button" id="sin" @click="handleButtonClick">sin</Button>
-            <Button type="button" id="7" @click="handleButtonClick">7</Button>
-            <Button type="button" id="8" @click="handleButtonClick">8</Button>
-            <Button type="button" id="9" @click="handleButtonClick">9</Button>
-            <Button type="button" id="+" @click="handleButtonClick">+</Button>
-          </p>
-          <p>
-            <Button type="button" id="cos" @click="handleButtonClick">cos</Button>
-            <Button type="button" id="4" @click="handleButtonClick">4</Button>
-            <Button type="button" id="5" @click="handleButtonClick">5</Button>
-            <Button type="button" id="6" @click="handleButtonClick">6</Button>
-            <Button type="button" id="^" @click="handleButtonClick">^</Button>
-          </p>
-          <p>
-            <Button type="button" id="tan" @click="handleButtonClick">tan</Button>
-            <Button type="button" id="1" @click="handleButtonClick">1</Button>
-            <Button type="button" id="2" @click="handleButtonClick">2</Button>
-            <Button type="button" id="3" @click="handleButtonClick">3</Button>
-            <Button type="button" id="=" class="equals" @click="handleButtonClick">=</Button>
-          </p>
-          <p>
-            <Button type="button" id="ans" @click="getHistory">ans</Button>
-            <Button type="button" id="%" @click="handleButtonClick">%</Button>
-            <Button type="button" id="0" @click="handleButtonClick">0</Button>
-            <Button type="button" id="." @click="handleButtonClick">.</Button>
-          </p>
-        </div>
+    <router-link id="rlink" to="/rate"><button @click="setNull = true">利率计算器</button></router-link>
+    <router-view></router-view>
+    <div v-if="!setNull">
+      <div id="block">
+        <div id="block00"></div>
+        <div id="block01"></div>
+        <div id="block1">{{ expression }}</div>
+        <div id="block2">{{ result }}</div>
       </div>
+      <div class="bangbang">
+        <p>
+          <Button id="(" @click="handleButtonClick">(</Button>
+          <Button id="C" @click="handleButtonClick">C</Button>
+          <Button id="/" @click="handleButtonClick">/</Button>
+          <Button id="*" @click="handleButtonClick">*</Button>
+          <Button id="d" @click="handleButtonClick">del</Button>
+        </p>
+        <p>
+          <Button type="button" id=")" @click="handleButtonClick">)</Button>
+          <Button type="button" id="ln" @click="handleButtonClick">ln</Button>
+          <Button type="button" id="log" @click="handleButtonClick">log</Button>
+          <Button type="button" id="√" @click="handleButtonClick">√</Button>
+          <Button type="button" id="-" @click="handleButtonClick">-</Button>
+        </p>
+        <p>
+          <Button type="button" id="sin" @click="handleButtonClick">sin</Button>
+          <Button type="button" id="7" @click="handleButtonClick">7</Button>
+          <Button type="button" id="8" @click="handleButtonClick">8</Button>
+          <Button type="button" id="9" @click="handleButtonClick">9</Button>
+          <Button type="button" id="+" @click="handleButtonClick">+</Button>
+        </p>
+        <p>
+          <Button type="button" id="cos" @click="handleButtonClick">cos</Button>
+          <Button type="button" id="4" @click="handleButtonClick">4</Button>
+          <Button type="button" id="5" @click="handleButtonClick">5</Button>
+          <Button type="button" id="6" @click="handleButtonClick">6</Button>
+          <Button type="button" id="^" @click="handleButtonClick">^</Button>
+        </p>
+        <p>
+          <Button type="button" id="tan" @click="handleButtonClick">tan</Button>
+          <Button type="button" id="1" @click="handleButtonClick">1</Button>
+          <Button type="button" id="2" @click="handleButtonClick">2</Button>
+          <Button type="button" id="3" @click="handleButtonClick">3</Button>
+          <Button type="button" id="=" class="equals" @click="handleButtonClick">=</Button>
+        </p>
+        <p>
+          <Button type="button" id="ans" @click="getHistory">ans</Button>
+          <Button type="button" id="%" @click="handleButtonClick">%</Button>
+          <Button type="button" id="0" @click="handleButtonClick">0</Button>
+          <Button type="button" id="." @click="handleButtonClick">.</Button>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -62,7 +64,7 @@ export default {
   name: 'App',
   data: function () {
     return {
-      isRatePage: false,
+      setNull: false,
       rateType: null,
       storeTime: null,
       money: null,
@@ -80,29 +82,12 @@ export default {
       opa_stack: []
     };
   },
-  watch: {
-    isRatePage(newValue, oldValue) {
-      alert(this.isRatePage)
-    }
-  },
   components: {
     Button,
     Option,
     Input
   },
-  // watch: {
-  //   rateType(newValue, oldValue) {
-  //     alert(this.rateType)
-  //     if (newValue === '选项1' || newValue === '选项2') {
-  //       this.sel2 = null
-  //     }
-  //   }
-  // },
   methods: {
-    // async getReq() {
-    //   const resp = await axios.get('/api/hello');
-    //   alert(resp.data);
-    // },
     handleButtonClick(id, innerText) {
       const buttonId = id;
       const buttonValue = innerText;
@@ -489,16 +474,24 @@ export default {
   grid-row-gap: -5000px;
 }
 
-.equals {
+/* .equals {
   z-index: 2;
   height: 400px;
   color: crimson;
-}
+} */
 
 #get {
   height: 85px;
   width: 280px;
   font-size: 160%;
   font-family: "Calibri", sans-serif;
+}
+
+#rlink {
+  position: absolute;
+  top: 300px;
+  right: 300px;
+  width: 100px;
+  height: 30px;
 }
 </style>

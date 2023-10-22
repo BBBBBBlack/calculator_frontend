@@ -15,9 +15,6 @@ module.exports = {
         target: 'http://localhost:8080', // 目标地址
         changeOrigin: true,
         // secure: true
-        // pathRewrite: {
-        //   '^/api': '' // 将多出来的公共请求头设置为空
-        // }
       }
     },
     // Various Dev Server settings

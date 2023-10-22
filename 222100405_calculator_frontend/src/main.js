@@ -12,6 +12,5 @@ Vue.config.devtools = true
 new Vue({
   router,
   render: h => h(App),
-  components: { App, Rate },
-  template: '<App/>'
+  components: { App },
 }).$mount('#app')

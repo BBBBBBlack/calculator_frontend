@@ -5,8 +5,7 @@ import App from '@/App.vue'
 import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
-
-export default new Router({
+const router = new Router({
   routes: [
     // {
     //   path: '/',
@@ -17,6 +16,16 @@ export default new Router({
       path: '/rate',
       name: 'Rate',
       component: Rate
+    },
+    {
+      path:'/app',
+      name:'App',
+      component:App
     }
   ]
 })
+
+
+
+export default router
+

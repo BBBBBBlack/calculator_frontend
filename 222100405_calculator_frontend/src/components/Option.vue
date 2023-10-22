@@ -1,7 +1,7 @@
 <template>
   <div>
-    <label :for="id">{{ label }}</label><br>
-    <select class="select-box" v-model="selectedOption" :id="id">
+    <!-- <label>{{ label }}</label><br> -->
+    <select id="id" class="select-box" v-model="selectedOption">
       <option :value=null disabled>{{ optionType }}</option>
       <option v-for="(option, index) in options" :key="index" :value="index">{{ option }}</option>
     </select>
@@ -20,13 +20,13 @@ export default {
       required: true
     },
     value: {
-      type: String,
+      type: Number,
       default: null
     },
-    label: {
-      type: String,
-      required: false
-    }
+    // label: {
+    //   type: String,
+    //   required: false
+    // }
   },
   data() {
     return {

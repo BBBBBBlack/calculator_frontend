@@ -1,7 +1,7 @@
 <template>
     <div class="input-wrapper">
-        <label :for="id">{{ label }}</label>
-        <input :id="id" :name="name" :type="type" v-model="inputMoney" :placeholder="placeholder" />
+        <!-- <label>{{ label }}</label> -->
+        <input :id="id" :type="type" v-model="inputMoney" :placeholder="placeholder" />
     </div>
 </template>
   
@@ -10,23 +10,15 @@ export default {
     props: {
         id: {
             type: String,
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
+            required: false
         },
         type: {
             type: String,
             default: 'text'
         },
         value: {
-            type: Number,
-            default: null
-        },
-        label: {
             type: String,
-            required: true
+            default: null
         },
         placeholder: {
             type: String,
