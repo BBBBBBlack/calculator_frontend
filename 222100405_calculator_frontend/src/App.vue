@@ -121,6 +121,9 @@ export default {
           case "[":
           case "<":
           case "(":
+          case "a":
+          case "h":
+          case "e":
             this.opa_stack.push(this.res[i]);
             break;
           case "}":
@@ -150,6 +153,33 @@ export default {
             let temp3 = this.data_stack.pop();
             this.data_stack.push(Math.tan(temp3));
             break;
+          case "b":
+            let t9;
+            while (this.opa_stack.length > 0 && (t9 = this.opa_stack.pop()) !== "a") {
+              this.opa_stack.push(t9);
+              this.popCalculator();
+            }
+            let temp4 = this.data_stack.pop();
+            this.data_stack.push(Math.log10(temp4));
+            break;
+          case "d":
+            let t10;
+            while (this.opa_stack.length > 0 && (t10 = this.opa_stack.pop()) !== "h") {
+              this.opa_stack.push(t10);
+              this.popCalculator();
+            }
+            let temp5 = this.data_stack.pop();
+            this.data_stack.push(Math.log(temp5));
+            break;
+          case "f":
+            let t11;
+            while (this.opa_stack.length > 0 && (t11 = this.opa_stack.pop()) !== "e") {
+              this.opa_stack.push(t11);
+              this.popCalculator();
+            }
+            let temp6 = this.data_stack.pop();
+            this.data_stack.push(Math.sqrt(temp6));
+            break;
           case ")":
             let t1;
             while (this.opa_stack.length > 0 && (t1 = this.opa_stack.pop()) !== "(") {
@@ -161,15 +191,17 @@ export default {
           case "-":
             if (i === 0 ||
               (this.res[i] === "-" && isNaN(this.res[i - 1]) &&
-                this.res[i - 1] !== ")" && this.res[i - 1] !== "}" && this.res[i - 1] !== "]" && this.res[i - 1] !== ">")) {
-              let [num, size] = this.getNum(i);
+                this.res[i - 1] !== ")" && this.res[i - 1] !== "}" && this.res[i - 1] !== "]" && this.res[i - 1] !== ">") &&
+              this.res[i - 1] !== "b" && this.res[i - 1] !== "d" && this.res[i - 1] !== "f") {
+              let [num, size] = this.getNum(this.res, i);
               this.data_stack.push(num);
               i += size - 1;
             } else {
               while (this.opa_stack.length > 0) {
                 let t3 = this.opa_stack.pop();
                 this.opa_stack.push(t3);
-                if (t3 !== "(" && t3 !== "{" && t3 !== "[" && t3 !== "<") {
+                if (t3 !== "(" && t3 !== "{" && t3 !== "[" && t3 !== "<" &&
+                  t3 !== "a" && t3 !== "h" && t3 !== "e") {
                   this.popCalculator();
                 } else {
                   break;
@@ -197,7 +229,7 @@ export default {
             break;
           default:
             if (!isNaN(this.res[i])) {
-              let [num, size] = this.getNum(i);
+              let [num, size] = this.getNum(this.res, i);
               this.data_stack.push(num);
               i += size - 1;
             } else {
@@ -218,16 +250,16 @@ export default {
       }
       throw "expression error";
     },
-    getNum(index) {
+    getNum(str, index) {
       let i;
-      for (i = index; i < this.res.length; i++) {
-        if (isNaN(this.res[i])) {
-          if (this.res[i] !== "." && !((this.res[i] === "-" || this.res[i] === "+") && i === index)) {
+      for (i = index; i < str.length; i++) {
+        if (isNaN(str[i])) {
+          if (str[i] !== "." && !((str[i] === "-" || str[i] === "+") && i === index)) {
             break;
           }
         }
       }
-      return [parseFloat(this.res.slice(index, i + 1)), i - index];
+      return [parseFloat(str.slice(index, i + 1)), i - index];
     },
     popCalculator() {
       if (this.data_stack.length >= 2 && this.opa_stack.length >= 1) {
@@ -270,7 +302,8 @@ export default {
       this.res = "";
     },
     transStr(str) {
-      let newStr = str.replace(/sin/g, "s").replace(/cos/g, "c").replace(/tan/g, "t");
+      let newStr = str.replace(/sin/g, "s").replace(/cos/g, "c").replace(/tan/g, "t")
+        .replace(/ln/g, "n").replace(/log/g, "g").replace(/√/g, "r");
       for (let i = 0; i < newStr.length; i++) {
         if (newStr[i] === "s") {
           newStr = this.replaceX(newStr, i, "{", "}");
@@ -279,6 +312,12 @@ export default {
 
         } else if (newStr[i] === "t") {
           newStr = this.replaceX(newStr, i, "<", ">");
+        } else if (newStr[i] === "n") {
+          newStr = this.replaceX(newStr, i, "a", "b");
+        } else if (newStr[i] === "g") {
+          newStr = this.replaceX(newStr, i, "h", "d");
+        } else if (newStr[i] === "r") {
+          newStr = this.replaceX(newStr, i, "e", "f");
         }
       }
       return newStr;
@@ -286,20 +325,26 @@ export default {
     //为所有的sin cos tan添加括号
     replaceX(str, index, ch1, ch2) {
       let stack = [];
-      for (let i = index; i < str.length; i++) {
-        if (str[i] === "(") {
-          if (stack.length === 0) {
-            str = str.slice(0, i - 1) + ch1 + str.slice(i + 1);
-          }
-          stack.push(str[i]);
-        } else if (str[i] === ")") {
-          stack.pop();
-          if (stack.length === 0) {
-            str = str.slice(0, i) + ch2 + str.slice(i + 1);
-            break;
+      if (str[index + 1] != '(') {
+        let [num, len] = this.getNum(str, index + 1);
+        str = str.slice(0, index) + ch1 + str.slice(index + 1, index + 1 + len) + ch2 + str.slice(index + 1 + len);
+      } else {
+        for (let i = index; i < str.length; i++) {
+          if (str[i] === "(") {
+            if (stack.length === 0) {
+              str = str.slice(0, i - 1) + ch1 + str.slice(i + 1);
+            }
+            stack.push(str[i]);
+          } else if (str[i] === ")") {
+            stack.pop();
+            if (stack.length === 0) {
+              str = str.slice(0, i) + ch2 + str.slice(i + 1);
+              break;
+            }
           }
         }
       }
+
       return str;
     },
     accDiv(arg1, arg2) {
